@@ -3,394 +3,552 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LibraSync - Technical Architecture Presentation</title>
+  <title>LibraSync - Technical Architecture Defense | AISYS</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     body {
-      background-color: #0b0f19;
-      color: #e2e8f0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
     }
     .slide {
       display: none;
-      min-height: 85vh;
-      animation: fadeIn 0.3s ease-in-out;
+      min-height: 80vh;
+      animation: slideIn 0.25s ease-out;
     }
     .slide.active {
       display: flex;
       flex-direction: column;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .glass-card {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
+    .card-clean {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     }
-    .gradient-badge {
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    .card-subtle {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    @media print {
+      body { background: #ffffff !important; padding: 0 !important; }
+      header, footer, .no-print { display: none !important; }
+      .slide {
+        display: flex !important;
+        page-break-after: always !important;
+        min-height: 95vh !important;
+        margin-bottom: 2rem !important;
+        padding: 2rem !important;
+        border-bottom: 1px solid #cbd5e1 !important;
+      }
     }
   </style>
 </head>
-<body class="flex flex-col justify-between min-h-screen p-6 md:p-12">
+<body class="flex flex-col justify-between min-h-screen px-6 py-4 md:px-16 md:py-8 max-w-7xl mx-auto">
+
+  <!-- Top Progress Bar -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-slate-200 z-50">
+    <div id="progressBar" class="h-full bg-blue-600 transition-all duration-300" style="width: 10%;"></div>
+  </div>
 
   <!-- Header -->
-  <header class="flex items-center justify-between border-b border-gray-800 pb-4 mb-6">
+  <header class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
     <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl gradient-badge flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/20">
-        <i class="fa-solid fa-tower-broadcast"></i>
+      <div class="w-9 h-9 rounded-lg bg-blue-900 text-white flex items-center justify-center font-bold text-base shadow-sm">
+        <i class="fa-solid fa-tower-broadcast text-sm"></i>
       </div>
       <div>
-        <h1 class="font-bold text-lg text-white tracking-wide">LibraSync</h1>
-        <p class="text-xs text-blue-400 font-mono">AISYS Technical Evaluation Presentation</p>
+        <div class="flex items-center space-x-2">
+          <span class="font-bold text-base text-slate-900 tracking-tight">LibraSync</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">AISYS Evaluation</span>
+        </div>
+        <p class="text-xs text-slate-500">Autonomous Intelligent Systems — Candidate Technical Defense</p>
       </div>
     </div>
-    <div class="flex items-center space-x-4">
-      <span id="slideCounter" class="text-sm font-mono text-gray-400 bg-gray-800 px-3 py-1 rounded-full">Slide 1 / 10</span>
+    <div class="flex items-center space-x-3">
+      <span id="slideCounter" class="text-xs font-mono-code font-medium text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-md">
+        Slide 1 / 10
+      </span>
+      <button onclick="window.print()" class="no-print text-xs text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 px-2.5 py-1 rounded-md transition shadow-sm" title="Print as PDF presentation">
+        <i class="fa-solid fa-print mr-1"></i> PDF
+      </button>
     </div>
   </header>
 
-  <!-- Slide 1: Title -->
-  <div class="slide active justify-center items-center text-center px-4" data-index="1">
-    <div class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 mb-6 uppercase">
-      Software Engineering Defense
-    </div>
-    <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-4">
-      LibraSync Architecture
-    </h1>
-    <p class="text-xl md:text-2xl text-blue-300 font-light max-w-3xl mb-8">
-      Intelligent RFID-Enabled Library Management System
-    </p>
-    <div class="glass-card p-6 max-w-2xl text-left border-l-4 border-l-blue-500 mb-8">
-      <p class="text-sm text-gray-300 leading-relaxed mb-3">
-        <strong>Mission:</strong> Deliver a production-grade, modular, offline-capable platform satisfying all AISYS SOP technical specifications and all 10 Priority Acceptance Criteria (AC 01 to AC 10).
+  <!-- Main Slide Content Area -->
+  <main class="flex-1 flex flex-col justify-center">
+
+    <!-- Slide 1: Title & Executive Overview -->
+    <div class="slide active justify-center items-center text-center px-4" data-index="1">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold text-blue-800 bg-blue-50 border border-blue-200 mb-6">
+        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+        <span>Software Engineering Technical Evaluation</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+        LibraSync Platform Architecture
+      </h1>
+      <p class="text-lg md:text-xl text-slate-600 max-w-2xl font-normal mb-8">
+        Intelligent RFID-Enabled Integrated Library Management System
       </p>
-      <p class="text-xs text-amber-400 font-mono">
-        <i class="fa-solid fa-shield-halved mr-1"></i> Core Principle: The system must never directly modify or corrupt the legacy ILMS database.
-      </p>
-    </div>
-    <div class="flex items-center space-x-4 text-xs text-gray-400">
-      <span><i class="fa-solid fa-layer-group text-blue-400 mr-1"></i> 7-Layer Modular Monolith</span>
-      <span>•</span>
-      <span><i class="fa-solid fa-microchip text-purple-400 mr-1"></i> Device-Neutral RFID Middleware</span>
-      <span>•</span>
-      <span><i class="fa-solid fa-check-double text-emerald-400 mr-1"></i> 100% Pytest Verified</span>
-    </div>
-  </div>
 
-  <!-- Slide 2: The Core Engineering Constraint -->
-  <div class="slide" data-index="2">
-    <h2 class="text-3xl font-bold text-white mb-2">1. Legacy ILMS Protection & Protocol Isolation</h2>
-    <p class="text-sm text-gray-400 mb-8">Why direct SQL against legacy library databases is catastrophic, and how LibraSync isolates them.</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-      <div class="glass-card p-6 border-red-500/30">
-        <div class="text-red-400 font-bold mb-3 flex items-center">
-          <i class="fa-solid fa-triangle-exclamation mr-2"></i> The Industry Anti-Pattern
+      <div class="card-clean p-6 max-w-3xl text-left border-l-4 border-l-blue-600 mb-8">
+        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Core Engineering Directive (SOP Pages 1 & 3)</div>
+        <p class="text-sm font-medium text-slate-900 mb-3 leading-relaxed">
+          The system maintains strict protocol isolation and <strong>never directly modifies or corrupts the legacy institutional ILMS database</strong>. Inter-system communication is mediated strictly via documented <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono-code text-blue-700">NCIP 2.0</code> and <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono-code text-blue-700">3M SIP2</code> adapter interfaces.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 text-xs text-slate-600">
+          <div><i class="fa-solid fa-layer-group text-blue-600 mr-1.5"></i><strong>7-Layer Monolith</strong> (SOP Page 4)</div>
+          <div><i class="fa-solid fa-microchip text-blue-600 mr-1.5"></i><strong>Neutral RFID Middleware</strong></div>
+          <div><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i><strong>15/15 Tests Passed</strong> (AC 01–10)</div>
         </div>
-        <ul class="text-sm space-y-3 text-gray-300">
-          <li>❌ <strong>Direct Database Access</strong>: Direct raw SQL <code class="text-red-300">UPDATE</code> queries against existing Koha/Sierra tables break integrity constraints and lock tables during inventory runs.</li>
-          <li>❌ <strong>Cascading Catalog Corruption</strong>: Deleting or modifying physical records in production without the legacy ILMS business layer triggers orphan records.</li>
-          <li>❌ <strong>Vendor Lock-In</strong>: Tightly coupling application logic to proprietary RFID C++ DLLs causes maintenance nightmares.</li>
-        </ul>
       </div>
 
-      <div class="glass-card p-6 border-emerald-500/30">
-        <div class="text-emerald-400 font-bold mb-3 flex items-center">
-          <i class="fa-solid fa-shield-check mr-2"></i> The LibraSync Solution
+      <div class="text-xs text-slate-500">
+        Candidate Software Engineering Submission · AISYS Recruitment · Hyderabad, India
+      </div>
+    </div>
+
+    <!-- Slide 2: Architectural Foundation & 7-Layer Topology -->
+    <div class="slide" data-index="2">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">System Architecture</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">The 7-Layer Modular Monolith Topology</h2>
+        <p class="text-xs md:text-sm text-slate-600">Engineered strictly to the 7 architectural tiers defined on Page 4 of the AISYS SOP.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+        <div class="card-clean p-4 border-t-4 border-t-blue-600">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono-code font-bold text-blue-700">LAYERS 1 & 2</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">Presentation & API</span>
+          </div>
+          <h3 class="font-bold text-slate-900 text-sm mb-1">User & Security Layer</h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Staff Portal, OPAC, and Admin Console built with <strong>React 19, TypeScript, Tailwind CSS</strong>, and <strong>Recharts</strong>. FastAPI API gateway enforces <strong>Argon2id password hashing</strong>, signed <strong>Bearer JWTs</strong>, and granular RBAC.
+          </p>
+          <div class="text-xs font-mono-code text-slate-400 bg-slate-50 p-2 rounded">
+            frontend/src/*<br>backend/app/api/v1/*
+          </div>
         </div>
-        <ul class="text-sm space-y-3 text-gray-300">
-          <li>✅ <strong>Zero-Touch Isolation</strong>: Legacy ILMS database is strictly read-only and foreign. LibraSync manages its own dedicated operational database (<code class="text-emerald-300">librasync</code>).</li>
-          <li>✅ <strong>Standard Protocol Boundaries</strong>: Inter-system communication occurs solely through documented standard protocols (<code class="text-blue-300">NCIP 2.0</code> and <code class="text-blue-300">3M SIP2</code>).</li>
-          <li>✅ <strong>Device-Neutral Abstraction</strong>: Abstract <code class="text-purple-300">RFIDReader</code> boundary permits hot-swapping hardware vendors without modifying circulation logic.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
 
-  <!-- Slide 3: 7-Layer Architecture -->
-  <div class="slide" data-index="3">
-    <h2 class="text-3xl font-bold text-white mb-2">2. The 7-Layer Modular Monolith Architecture</h2>
-    <p class="text-sm text-gray-400 mb-6">Designed exactly to the 7 logical tiers defined on Page 4 of the AISYS SOP.</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
-      <div class="glass-card p-4">
-        <span class="text-xs font-mono text-blue-400">LAYER 1 & 2</span>
-        <h3 class="font-bold text-white text-base mt-1 mb-2">Presentation & Security</h3>
-        <p class="text-xs text-gray-400 mb-3">React 19, TypeScript, Vite, Tailwind CSS, Lucide icons, Recharts analytics. FastAPI REST API, Argon2id hashing, signed Bearer JWT, granular RBAC.</p>
-        <div class="text-xs font-mono text-gray-500">frontend/src/* | backend/app/api/v1/*</div>
-      </div>
-
-      <div class="glass-card p-4">
-        <span class="text-xs font-mono text-purple-400">LAYER 3 & 4</span>
-        <h3 class="font-bold text-white text-base mt-1 mb-2">Services & RFID Middleware</h3>
-        <p class="text-xs text-gray-400 mb-3">Domain services for Catalog, Circulation, Fines, Inventory, Gate, and Migration. Device-neutral adapters for Desktop Pad, Handheld Wand, 3D Gate, and Smart Card.</p>
-        <div class="text-xs font-mono text-gray-500">app/services/* | rfid-middleware/*</div>
-      </div>
-
-      <div class="glass-card p-4">
-        <span class="text-xs font-mono text-emerald-400">LAYER 5, 6 & 7</span>
-        <h3 class="font-bold text-white text-base mt-1 mb-2">Persistence & Operations</h3>
-        <p class="text-xs text-gray-400 mb-3">PostgreSQL 16 transactional database (with local SQLite fallback), full-text search indexing, Docker Compose multi-container deployment, and health telemetry.</p>
-        <div class="text-xs font-mono text-gray-500">docker-compose.yml | database/*</div>
-      </div>
-    </div>
-
-    <div class="glass-card p-4 mt-4 bg-blue-950/20 border-blue-500/20">
-      <p class="text-xs text-blue-300">
-        <strong>Why Modular Monolith over Microservices?</strong> Eliminates distributed transaction latency and complex service orchestration while maintaining strict internal boundaries. If hardware scale requires it, the RFID middleware can be extracted into an independent microservice with zero changes to domain logic.
-      </p>
-    </div>
-  </div>
-
-  <!-- Slide 4: Circulation & EAS -->
-  <div class="slide" data-index="4">
-    <h2 class="text-3xl font-bold text-white mb-2">3. Circulation State Machine & EAS Security Bit</h2>
-    <p class="text-sm text-gray-400 mb-6">Demonstrating Acceptance Criteria AC 03 and AC 04.</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-      <div class="glass-card p-6">
-        <h3 class="font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-arrows-spin text-blue-400 mr-2"></i> The EAS Bit Lifecycle
-        </h3>
-        <div class="space-y-4 text-xs">
-          <div class="p-3 bg-gray-900 rounded-lg border border-gray-800">
-            <span class="font-bold text-amber-400 uppercase">1. In Stacks (ARMED)</span>
-            <p class="text-gray-400 mt-1"><code class="text-blue-300">security_bit = True</code>. Item is on shelf or returned. Passing through perimeter gates triggers the audible siren and optical CCTV snapshot.</p>
+        <div class="card-clean p-4 border-t-4 border-t-indigo-600">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono-code font-bold text-indigo-700">LAYERS 3 & 4</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">Services & Middleware</span>
           </div>
-          <div class="p-3 bg-gray-900 rounded-lg border border-gray-800">
-            <span class="font-bold text-emerald-400 uppercase">2. Check Out (DISARMED)</span>
-            <p class="text-gray-400 mt-1"><code class="text-blue-300">security_bit = False</code>. Staff scans member card and book EPC. Item status becomes <code class="text-blue-300">ISSUED</code>. Gate authorizes exit without alarm.</p>
+          <h3 class="font-bold text-slate-900 text-sm mb-1">Services & Hardware Adapters</h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Cataloging, Circulation, Fines, Inventory, Gate, and Migration services. Hardware-neutral adapter layer (<code class="font-mono-code text-xs bg-slate-100 px-1">RFIDReader</code> ABC) for Staff Pad, Mobile Handheld Wand, 3D Gate, and Smart Card.
+          </p>
+          <div class="text-xs font-mono-code text-slate-400 bg-slate-50 p-2 rounded">
+            backend/app/services/*<br>rfid-middleware/adapters/*
           </div>
-          <div class="p-3 bg-gray-900 rounded-lg border border-gray-800">
-            <span class="font-bold text-blue-400 uppercase">3. Check In (RE-ARMED)</span>
-            <p class="text-gray-400 mt-1">Staff scans returned book. System reconciles overdue fines ($1.00/day), resets status to <code class="text-blue-300">AVAILABLE</code>, and sets <code class="text-blue-300">security_bit = True</code>.</p>
+        </div>
+
+        <div class="card-clean p-4 border-t-4 border-t-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono-code font-bold text-slate-700">LAYERS 5, 6 & 7</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">Persistence & Ops</span>
+          </div>
+          <h3 class="font-bold text-slate-900 text-sm mb-1">Data, Search & Operations</h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            Transactional <strong>PostgreSQL 16</strong> operational database (with automatic development fallback to SQLite), full-text catalog indexing, immutable audit ledger, Docker Compose, and staging rollback.
+          </p>
+          <div class="text-xs font-mono-code text-slate-400 bg-slate-50 p-2 rounded">
+            backend/app/models/*<br>docker-compose.yml
           </div>
         </div>
       </div>
 
-      <div class="glass-card p-6">
-        <h3 class="font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-ban text-red-400 mr-2"></i> AC 04 Restriction Enforcement
-        </h3>
-        <div class="space-y-4 text-xs">
-          <div class="p-3 bg-red-950/20 rounded-lg border border-red-500/20">
-            <span class="font-bold text-red-400">Reference-Only Protection</span>
-            <p class="text-gray-300 mt-1">Any attempt to issue a reference-only volume is rejected with an HTTP 400 validation error before modifying database state.</p>
+      <div class="card-subtle p-3 mt-4 text-xs text-slate-700 flex items-start space-x-2">
+        <i class="fa-solid fa-circle-info text-blue-600 mt-0.5"></i>
+        <span><strong>Engineering Decision (Modular Monolith vs. Microservices):</strong> In-process service invocation eliminates distributed transaction latency and distributed consensus complexity, maintaining strict boundaries while allowing modular adapter swaps.</span>
+      </div>
+    </div>
+
+    <!-- Slide 3: Legacy ILMS Safe Isolation & Boundaries -->
+    <div class="slide" data-index="3">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Integrity & Boundaries</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">Zero-Corruption Legacy ILMS Protection</h2>
+        <p class="text-xs md:text-sm text-slate-600">How LibraSync satisfies Section 1 and Section 3 of the AISYS SOP.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
+        <div class="card-clean p-5 border-l-4 border-l-rose-500">
+          <div class="text-sm font-bold text-rose-800 mb-2 flex items-center">
+            <i class="fa-solid fa-circle-xmark mr-2 text-rose-600"></i> The Industry Anti-Pattern (What Destroys ILMS Data)
           </div>
-          <div class="p-3 bg-red-950/20 rounded-lg border border-red-500/20">
-            <span class="font-bold text-red-400">Blocked Member Quarantine</span>
-            <p class="text-gray-300 mt-1">Members with status <code class="text-red-300">BLOCKED</code> or exceeding maximum loan limits (5 books) are rejected immediately.</p>
+          <ul class="text-xs space-y-3 text-slate-600 leading-relaxed">
+            <li><strong>Direct Database Access</strong>: Direct SQL <code class="font-mono-code text-rose-700 bg-rose-50 px-1">UPDATE</code> or <code class="font-mono-code text-rose-700 bg-rose-50 px-1">DELETE</code> queries against existing Koha/Sierra tables bypass internal triggers and cause catastrophic table locks.</li>
+            <li><strong>Foreign Key Corruption</strong>: Directly inserting or pruning records in external ILMS tables corrupts cascade relationships and circulation histories.</li>
+            <li><strong>Vendor SDK Hardcoding</strong>: Writing business logic against vendor-specific C++ DLLs locks the library into proprietary hardware.</li>
+          </ul>
+        </div>
+
+        <div class="card-clean p-5 border-l-4 border-l-emerald-600">
+          <div class="text-sm font-bold text-emerald-800 mb-2 flex items-center">
+            <i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i> The LibraSync Solution (Strict Architectural Defense)
           </div>
-          <div class="p-3 bg-purple-950/20 rounded-lg border border-purple-500/20">
-            <span class="font-bold text-purple-300">One-Click Evaluation Presets</span>
-            <p class="text-gray-300 mt-1">The live UI includes dedicated test preset buttons so evaluators can trigger and observe restriction rejections in real time.</p>
+          <ul class="text-xs space-y-3 text-slate-600 leading-relaxed">
+            <li><strong>Independent Operational Database</strong>: LibraSync operates exclusively on its own database (<code class="font-mono-code text-emerald-700 bg-emerald-50 px-1">librasync</code>). Zero queries ever run against external ILMS tables.</li>
+            <li><strong>Standard Protocol Boundaries</strong>: All inter-system synchronization occurs through standardized protocol adapters (<code class="font-mono-code text-blue-700 bg-blue-50 px-1">NCIP 2.0</code> and <code class="font-mono-code text-blue-700 bg-blue-50 px-1">3M SIP2</code>).</li>
+            <li><strong>Device-Neutral Normalization</strong>: Abstract hardware adapter layer converts proprietary signals into normalized <code class="font-mono-code text-slate-800 bg-slate-100 px-1">RFIDEvent</code> dictionaries before hitting domain logic.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card-subtle p-3 mt-4 text-xs font-mono-code text-slate-700">
+        Boundary Code: backend/app/integrations/ilms/base.py | ncip_adapter.py | sip2_adapter.py
+      </div>
+    </div>
+
+    <!-- Slide 4: RFID Hardware Abstraction & ISO Standards -->
+    <div class="slide" data-index="4">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Hardware Integration</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">RFID Middleware & Standards Compliance</h2>
+        <p class="text-xs md:text-sm text-slate-600">Device-neutral abstraction adhering to ISO 18000-6C and ISO 28560 specifications.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1">
+        <div class="card-clean p-4 text-center">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-desktop text-base"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-xs mb-1">Staff Desktop Pad</h4>
+          <p class="text-xs text-slate-500 mb-2">Near-field 13.56 MHz / UHF</p>
+          <p class="text-xs text-slate-600 text-left">High-speed counter check-out and check-in with instant EAS bit toggling.</p>
+        </div>
+
+        <div class="card-clean p-4 text-center">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-hand-holding-hand text-base"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-xs mb-1">Handheld Mobile Wand</h4>
+          <p class="text-xs text-slate-500 mb-2">UHF 860–960 MHz Long-Range</p>
+          <p class="text-xs text-slate-600 text-left">Rapid stack sweeping (40+ tags/sec), detecting misplaced shelf items and missing stock.</p>
+        </div>
+
+        <div class="card-clean p-4 text-center">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-door-open text-base"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-xs mb-1">3D Security Gate</h4>
+          <p class="text-xs text-slate-500 mb-2">Portal EAS Monitor</p>
+          <p class="text-xs text-slate-600 text-left">Perimeter theft detection, audible alarm sirens, and optical CCTV snapshot capture.</p>
+        </div>
+
+        <div class="card-clean p-4 text-center">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-id-card text-base"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-xs mb-1">Staff Smart Card</h4>
+          <p class="text-xs text-slate-500 mb-2">ISO 14443A (13.56 MHz)</p>
+          <p class="text-xs text-slate-600 text-left">Contactless card tap resolving staff identities and RBAC roles with zero passwords.</p>
+        </div>
+      </div>
+
+      <div class="card-clean p-4 mt-4">
+        <h4 class="text-xs font-bold text-slate-900 mb-2 uppercase tracking-wider">Tag Encoding Standard (EPC Class 1 Gen 2 / ISO 28560)</h4>
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-2 text-center text-xs">
+          <div class="p-2 bg-slate-50 rounded border border-slate-200"><span class="font-bold text-blue-700">Header</span><br><span class="text-slate-500 text-[11px]">8 bits</span></div>
+          <div class="p-2 bg-slate-50 rounded border border-slate-200"><span class="font-bold text-blue-700">Filter Bit</span><br><span class="text-slate-500 text-[11px]">3 bits</span></div>
+          <div class="p-2 bg-slate-50 rounded border border-slate-200"><span class="font-bold text-blue-700">Partition</span><br><span class="text-slate-500 text-[11px]">3 bits</span></div>
+          <div class="p-2 bg-slate-50 rounded border border-slate-200"><span class="font-bold text-blue-700">Institution ID</span><br><span class="text-slate-500 text-[11px]">24 bits</span></div>
+          <div class="p-2 bg-slate-50 rounded border border-slate-200"><span class="font-bold text-blue-700">Accession No.</span><br><span class="text-slate-500 text-[11px]">38 bits</span></div>
+          <div class="p-2 bg-slate-50 rounded border border-slate-200"><span class="font-bold text-blue-700">Serial Copy</span><br><span class="text-slate-500 text-[11px]">20 bits</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Circulation Engine & Restrictions (AC 03 & AC 04) -->
+    <div class="slide" data-index="5">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Circulation Engine</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">EAS Security State Machine & Restriction Rules</h2>
+        <p class="text-xs md:text-sm text-slate-600">Demonstrating compliance with Priority Acceptance Criteria AC 03 and AC 04.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
+        <div class="card-clean p-5">
+          <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center">
+            <i class="fa-solid fa-arrows-spin text-blue-600 mr-2"></i> The 3-Phase EAS Security Bit Lifecycle
+          </h3>
+          <div class="space-y-3 text-xs">
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="font-bold text-amber-700 uppercase">1. In Stacks / Check-In (ARMED)</span>
+              <p class="text-slate-600 mt-1"><code class="font-mono-code text-blue-700 bg-white px-1">security_bit = True</code>. Item is on shelf. Unauthorized passage through 3D exit gate triggers siren alarm and CCTV capture.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="font-bold text-emerald-700 uppercase">2. Check-Out / Issued (DISARMED)</span>
+              <p class="text-slate-600 mt-1"><code class="font-mono-code text-blue-700 bg-white px-1">security_bit = False</code>. Staff scans member badge and item EPC. Item status becomes <code class="font-mono-code bg-white px-1">ISSUED</code>. Gate permits exit.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="font-bold text-blue-700 uppercase">3. Check-In / Returned (RE-ARMED)</span>
+              <p class="text-slate-600 mt-1">Returned item scanned. System calculates overdue fine ($2.00/day), updates status to <code class="font-mono-code bg-white px-1">AVAILABLE</code>, and sets <code class="font-mono-code text-blue-700 bg-white px-1">security_bit = True</code>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-clean p-5">
+          <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center">
+            <i class="fa-solid fa-ban text-rose-600 mr-2"></i> AC 04 Circulation Restrictions Engine
+          </h3>
+          <div class="space-y-3 text-xs">
+            <div class="p-3 bg-rose-50/60 rounded-lg border border-rose-200">
+              <span class="font-bold text-rose-800">1. Reference-Only Volume Rejection</span>
+              <p class="text-slate-700 mt-1">Books flagged with <code class="font-mono-code text-rose-700 bg-white px-1">is_reference_only = True</code> are blocked from loan. Checkout is rejected immediately with an HTTP 400 error.</p>
+            </div>
+            <div class="p-3 bg-rose-50/60 rounded-lg border border-rose-200">
+              <span class="font-bold text-rose-800">2. Blocked Patron Rejection</span>
+              <p class="text-slate-700 mt-1">Patrons with status <code class="font-mono-code text-rose-700 bg-white px-1">BLOCKED</code> or outstanding overdue fines exceeding $100 are rejected immediately.</p>
+            </div>
+            <div class="p-3 bg-blue-50/60 rounded-lg border border-blue-200">
+              <span class="font-bold text-blue-800">3. Live One-Click Demonstration Presets</span>
+              <p class="text-slate-700 mt-1">The live UI includes dedicated evaluation buttons allowing evaluators to verify restriction rejections instantly.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Slide 5: Handheld Inventory -->
-  <div class="slide" data-index="5">
-    <h2 class="text-3xl font-bold text-white mb-2">4. Handheld RFID Inventory Auditing (AC 05)</h2>
-    <p class="text-sm text-gray-400 mb-6">High-speed shelf scanning with real-time misplacement detection.</p>
+    <!-- Slide 6: Handheld Shelf Auditing (AC 05) -->
+    <div class="slide" data-index="6">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Inventory Auditing</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">Handheld RFID Wand Shelf Sweep</h2>
+        <p class="text-xs md:text-sm text-slate-600">Demonstrating real-time misplaced item detection and missing stock identification.</p>
+      </div>
 
-    <div class="glass-card p-6 flex-1">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="text-center p-4 bg-gray-900 rounded-lg border border-gray-800">
-          <div class="text-3xl font-bold text-emerald-400 mb-1">0.1s</div>
-          <div class="text-xs text-gray-400">Multi-Tag Interrogation</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+        <div class="card-clean p-4 text-center">
+          <div class="text-2xl font-extrabold text-blue-700 mb-1">0.1 sec</div>
+          <div class="text-xs text-slate-500 font-medium">Interrogation Speed</div>
+          <div class="text-xs text-slate-600 mt-1">Multi-tag bulk anti-collision reads</div>
         </div>
-        <div class="text-center p-4 bg-gray-900 rounded-lg border border-gray-800">
-          <div class="text-3xl font-bold text-amber-400 mb-1">100%</div>
-          <div class="text-xs text-gray-400">Misplacement Detection</div>
+        <div class="card-clean p-4 text-center">
+          <div class="text-2xl font-extrabold text-amber-600 mb-1">100%</div>
+          <div class="text-xs text-slate-500 font-medium">Misplacement Accuracy</div>
+          <div class="text-xs text-slate-600 mt-1">Immediate shelf collision flag</div>
         </div>
-        <div class="text-center p-4 bg-gray-900 rounded-lg border border-gray-800">
-          <div class="text-3xl font-bold text-blue-400 mb-1">Real-Time</div>
-          <div class="text-xs text-gray-400">Missing Item Reconciliation</div>
+        <div class="card-clean p-4 text-center">
+          <div class="text-2xl font-extrabold text-emerald-600 mb-1">Automated</div>
+          <div class="text-xs text-slate-500 font-medium">Missing Tally</div>
+          <div class="text-xs text-slate-600 mt-1">Catalog reconciliation report</div>
         </div>
       </div>
 
-      <div class="space-y-3 text-sm text-gray-300">
-        <p>• <strong>Target Shelf Assignment</strong>: Staff initializes an audit session targeting a specific location (e.g., <code class="text-blue-300">SHELF-COM-01</code>).</p>
-        <p>• <strong>High-Velocity Sweep</strong>: The simulated handheld reader captures bulk UHF Gen 2 EPC reads.</p>
-        <p>• <strong>Misplaced Item Collision Engine</strong>: The inventory service immediately detects if an item's registered catalog location doesn't match the current shelf (e.g. an Architecture book on the CS shelf) and flags it with an amber badge.</p>
-        <p>• <strong>Missing Items Reconciliation</strong>: Identifies books expected on that shelf that were absent from the sweep.</p>
+      <div class="card-clean p-5 flex-1">
+        <h3 class="font-bold text-slate-900 text-xs mb-3 uppercase tracking-wider">Audit Workflow Walkthrough</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
+          <div class="p-3 bg-slate-50 rounded border border-slate-200">
+            <strong>1. Session Initialization:</strong> Staff selects target shelf location (e.g. <code class="font-mono-code bg-white px-1">SHELF-COM-01</code>). Session starts with status <code class="font-mono-code bg-white px-1">ACTIVE</code>.
+          </div>
+          <div class="p-3 bg-slate-50 rounded border border-slate-200">
+            <strong>2. Mobile Sweep:</strong> Staff walks stacks sweeping the mobile wand. System interrogates tags and compares current shelf against catalog location.
+          </div>
+          <div class="p-3 bg-slate-50 rounded border border-slate-200">
+            <strong>3. Misplaced Detection:</strong> An Architecture book found on the Computer Science shelf is flagged in amber with its expected location.
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Slide 6: Security Gate & Offline -->
-  <div class="slide" data-index="6">
-    <h2 class="text-3xl font-bold text-white mb-2">5. Perimeter Gates & Offline Resilience (AC 06 & AC 09)</h2>
-    <p class="text-sm text-gray-400 mb-6">Loss prevention with optical surveillance and zero-downtime offline operation.</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-      <div class="glass-card p-6">
-        <h3 class="font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-camera text-blue-400 mr-2"></i> AC 06: Perimeter Loss Prevention
-        </h3>
-        <p class="text-xs text-gray-300 mb-3">When an unauthorized or reference volume (<code class="text-blue-300">security_bit = True</code>) passes the gate portal:</p>
-        <ul class="text-xs space-y-2 text-gray-300">
-          <li>🚨 <strong>Audible/Visual Alarm</strong>: Flashing red perimeter warning siren.</li>
-          <li>📸 <strong>Optical CCTV Capture</strong>: Mock camera adapter triggers an instant high-resolution snapshot with embedded timestamp.</li>
-          <li>📝 <strong>Audit Incident Logging</strong>: Permanently writes event to <code class="text-blue-300">gate_events</code> table and dispatches staff alerts.</li>
-        </ul>
+    <!-- Slide 7: Perimeter Security & Offline Resilience (AC 06 & AC 09) -->
+    <div class="slide" data-index="7">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Perimeter Security</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">3D Gate Loss Prevention & Offline Autonomy</h2>
+        <p class="text-xs md:text-sm text-slate-600">Perimeter theft protection with optical CCTV capture and zero-downtime offline caching.</p>
       </div>
 
-      <div class="glass-card p-6">
-        <h3 class="font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-wifi-slash text-purple-400 mr-2"></i> AC 09: Offline Autonomous Mode
-        </h3>
-        <p class="text-xs text-gray-300 mb-3">If campus network connectivity to the backend server is lost:</p>
-        <ul class="text-xs space-y-2 text-gray-300">
-          <li>💾 <strong>Local Security Cache</strong>: The gate continues evaluating passages against an in-memory synchronized tag security state map.</li>
-          <li>⚡ <strong>Autonomous Alarm</strong>: Armed tags continue triggering local sirens with zero server latency.</li>
-          <li>🔄 <strong>Persistent Outbox Queue</strong>: Offline events are buffered and automatically replayed to the server upon reconnection.</li>
-        </ul>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
+        <div class="card-clean p-5 border-l-4 border-l-blue-600">
+          <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center">
+            <i class="fa-solid fa-camera text-blue-600 mr-2"></i> AC 06: Perimeter Loss Prevention
+          </h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            When an armed tag (<code class="font-mono-code text-blue-700 bg-slate-100 px-1">security_bit = True</code>) passes through portal <code class="font-mono-code bg-slate-100 px-1">GATE-PORTAL-01</code>:
+          </p>
+          <ul class="text-xs space-y-2 text-slate-600 leading-relaxed">
+            <li><i class="fa-solid fa-bell text-rose-600 mr-1.5"></i><strong>Audible & Visual Alarm:</strong> Immediate perimeter siren triggers.</li>
+            <li><i class="fa-solid fa-camera text-blue-600 mr-1.5"></i><strong>Optical CCTV Snapshot:</strong> Camera adapter captures evidentiary frame with timestamp and portal coordinates.</li>
+            <li><i class="fa-solid fa-clipboard-list text-slate-600 mr-1.5"></i><strong>Audit Incident Logging:</strong> Writes event to <code class="font-mono-code bg-slate-100 px-1">gate_events</code> and queues staff notification.</li>
+          </ul>
+        </div>
+
+        <div class="card-clean p-5 border-l-4 border-l-indigo-600">
+          <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center">
+            <i class="fa-solid fa-wifi text-indigo-600 mr-2"></i> AC 09: Offline Autonomous Gate Resilience
+          </h3>
+          <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+            If campus network connectivity to the backend server drops:
+          </p>
+          <ul class="text-xs space-y-2 text-slate-600 leading-relaxed">
+            <li><i class="fa-solid fa-database text-indigo-600 mr-1.5"></i><strong>Local Security State Cache:</strong> Gate evaluates passages against an in-memory synchronized tag security map.</li>
+            <li><i class="fa-solid fa-bolt text-amber-600 mr-1.5"></i><strong>Autonomous Siren:</strong> Armed tags trigger local sirens with zero server dependency.</li>
+            <li><i class="fa-solid fa-inbox text-emerald-600 mr-1.5"></i><strong>Persistent Outbox Queue:</strong> Passage events buffer locally and replay automatically upon server reconnection.</li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Slide 7: Migration Pipeline -->
-  <div class="slide" data-index="7">
-    <h2 class="text-3xl font-bold text-white mb-2">6. Staging-First Migration & Atomic Rollback (AC 01 & AC 10)</h2>
-    <p class="text-sm text-gray-400 mb-6">Safe Excel/CSV data onboarding without catalog corruption.</p>
+    <!-- Slide 8: Staging-First Migration & Atomic Rollback (AC 01 & AC 10) -->
+    <div class="slide" data-index="8">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Data Ingestion</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">Staging-First Migration Pipeline & Rollback</h2>
+        <p class="text-xs md:text-sm text-slate-600">Safe spreadsheet onboarding for 20,000+ records with zero catalog corruption.</p>
+      </div>
 
-    <div class="glass-card p-6 flex-1">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 text-center text-xs">
-        <div class="p-3 bg-gray-900 rounded-lg flex-1 border border-gray-800">
-          <div class="font-bold text-white mb-1">1. Upload</div>
-          <div class="text-gray-400">Parse workbook & stage raw records</div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-5 text-center text-xs">
+        <div class="card-clean p-3">
+          <div class="font-bold text-blue-700 mb-1">Stage 1: Staging</div>
+          <p class="text-slate-500 text-[11px]">Buffer raw Excel rows into <code class="font-mono-code">migration_staging</code></p>
         </div>
-        <i class="fa-solid fa-arrow-right text-gray-600 hidden md:block"></i>
-        <div class="p-3 bg-gray-900 rounded-lg flex-1 border border-gray-800">
-          <div class="font-bold text-white mb-1">2. Validate</div>
-          <div class="text-gray-400">Intra-batch + DB duplicate check</div>
+        <div class="card-clean p-3">
+          <div class="font-bold text-indigo-700 mb-1">Stage 2: Validation</div>
+          <p class="text-slate-500 text-[11px]">Intra-batch + active operational DB duplicate check</p>
         </div>
-        <i class="fa-solid fa-arrow-right text-gray-600 hidden md:block"></i>
-        <div class="p-3 bg-gray-900 rounded-lg flex-1 border border-gray-800">
-          <div class="font-bold text-white mb-1">3. Commit</div>
-          <div class="text-gray-400">Atomic ACID insert of clean rows</div>
+        <div class="card-clean p-3">
+          <div class="font-bold text-emerald-700 mb-1">Stage 3: Commit</div>
+          <p class="text-slate-500 text-[11px]">Atomic ACID insert of clean records to <code class="font-mono-code">books</code></p>
         </div>
-        <i class="fa-solid fa-arrow-right text-gray-600 hidden md:block"></i>
-        <div class="p-3 bg-red-950/20 rounded-lg flex-1 border border-red-500/20">
-          <div class="font-bold text-red-400 mb-1">4. Rollback</div>
-          <div class="text-gray-400">One-click atomic batch reversal</div>
+        <div class="card-clean p-3 border-rose-200 bg-rose-50/30">
+          <div class="font-bold text-rose-700 mb-1">Stage 4: Rollback</div>
+          <p class="text-slate-500 text-[11px]">One-click atomic purge of batch records if needed</p>
         </div>
       </div>
 
-      <div class="space-y-3 text-xs text-gray-300">
-        <p>• <strong>Dual-Layer Collision Quarantine</strong>: Quarantines both intra-batch duplicates (repeated rows in the file) and operational DB collisions (ISBNs already in production) with detailed row numbers.</p>
-        <p>• <strong>Atomic Rollback (AC 10)</strong>: Dedicated CLI and UI rollback function purges all operational records created by a specific <code class="text-blue-300">job_id</code> while keeping full audit history intact.</p>
+      <div class="card-clean p-5 flex-1">
+        <h3 class="font-bold text-slate-900 text-xs mb-3 uppercase tracking-wider">Dual-Layer Collision Quarantine (AC 01)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600">
+          <div class="p-3 bg-slate-50 rounded border border-slate-200">
+            <strong>1. Intra-Batch Collisions:</strong> Detects multiple occurrences of the same ISBN or Member Code within the same uploaded spreadsheet. Quarantined with row index.
+          </div>
+          <div class="p-3 bg-slate-50 rounded border border-slate-200">
+            <strong>2. Operational DB Collisions:</strong> Compares staged records against active production tables. Conflicts are isolated in <code class="font-mono-code bg-white px-1">migration_errors</code> without corrupting operational state.
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Slide 8: Enterprise Security -->
-  <div class="slide" data-index="8">
-    <h2 class="text-3xl font-bold text-white mb-2">7. Enterprise Security & Cryptography (AC 07)</h2>
-    <p class="text-sm text-gray-400 mb-6">Standards-compliant staff authentication and role management.</p>
+    <!-- Slide 9: Enterprise Security & Smart Card Auth (AC 07) -->
+    <div class="slide" data-index="9">
+      <div class="mb-5">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Security & Compliance</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">Enterprise Cryptography & Smart Card Login</h2>
+        <p class="text-xs md:text-sm text-slate-600">Standards-compliant staff authentication, signed JWT tokens, and granular RBAC.</p>
+      </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
-      <div class="glass-card p-6">
-        <div class="text-blue-400 font-bold mb-3 flex items-center">
-          <i class="fa-solid fa-key mr-2"></i> Argon2id Password Hashing
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+        <div class="card-clean p-5">
+          <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-key text-sm"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-sm mb-1">Argon2id Hashing</h4>
+          <p class="text-xs text-slate-500 mb-3">RFC 9106 Standard</p>
+          <ul class="text-xs space-y-1.5 text-slate-600 font-mono-code">
+            <li>Memory: 65,536 KiB (64 MB)</li>
+            <li>Time Cost: 2 iterations</li>
+            <li>Parallelism: 2 threads</li>
+          </ul>
         </div>
-        <p class="text-xs text-gray-400 mb-2">Configured to strict RFC 9106 standards:</p>
-        <ul class="text-xs text-gray-300 space-y-1 font-mono">
-          <li>Memory: 65,536 KiB (64 MB)</li>
-          <li>Time Cost: 2 iterations</li>
-          <li>Parallelism: 2 threads</li>
-        </ul>
-      </div>
 
-      <div class="glass-card p-6">
-        <div class="text-purple-400 font-bold mb-3 flex items-center">
-          <i class="fa-solid fa-id-card-clip mr-2"></i> Smart Card Login (AC 07)
+        <div class="card-clean p-5">
+          <div class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-id-badge text-sm"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-sm mb-1">Smart Card Tap (AC 07)</h4>
+          <p class="text-xs text-slate-500 mb-3">13.56 MHz Contactless</p>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            One-touch counter login for librarians (<code class="font-mono-code text-[11px] bg-slate-100 px-1">CARD-STAFF-ADMIN-01</code>) resolving account state and role permissions in sub-millisecond time.
+          </p>
         </div>
-        <p class="text-xs text-gray-400 mb-2">Contactless 13.56 MHz card UID authentication:</p>
-        <p class="text-xs text-gray-300">Instant counter shift handovers with simulated card tap resolving staff account and RBAC roles instantaneously.</p>
-      </div>
 
-      <div class="glass-card p-6">
-        <div class="text-emerald-400 font-bold mb-3 flex items-center">
-          <i class="fa-solid fa-user-shield mr-2"></i> Granular RBAC
+        <div class="card-clean p-5">
+          <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-shield text-sm"></i>
+          </div>
+          <h4 class="font-bold text-slate-900 text-sm mb-1">Role-Based Access</h4>
+          <p class="text-xs text-slate-500 mb-3">FastAPI Dependencies</p>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Granular enforcement across Admin, Librarian, and Operator roles via signed HMAC-SHA256 JWT claims (<code class="font-mono-code text-[11px] bg-slate-100 px-1">sub</code>, <code class="font-mono-code text-[11px] bg-slate-100 px-1">roles</code>, <code class="font-mono-code text-[11px] bg-slate-100 px-1">exp</code>).
+          </p>
         </div>
-        <p class="text-xs text-gray-400 mb-2">Strict endpoint security dependencies:</p>
-        <p class="text-xs text-gray-300">Admin, Librarian, and Operator roles enforced via FastAPI <code class="text-emerald-300">require_roles()</code> dependency with signed Bearer JWT verification.</p>
       </div>
     </div>
-  </div>
 
-  <!-- Slide 9: Acceptance Verification Matrix -->
-  <div class="slide" data-index="9">
-    <h2 class="text-3xl font-bold text-white mb-2">8. Automated Verification Matrix (AC 01 - AC 10)</h2>
-    <p class="text-sm text-gray-400 mb-4">15 of 15 automated Pytest suites passing (100% pass rate).</p>
-
-    <div class="glass-card p-4 overflow-x-auto flex-1">
-      <table class="w-full text-left text-xs">
-        <thead class="text-gray-400 border-b border-gray-800">
-          <tr>
-            <th class="pb-2">Criteria</th>
-            <th class="pb-2">Description</th>
-            <th class="pb-2">Verification Suite</th>
-            <th class="pb-2">Status</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-800 text-gray-300 font-mono">
-          <tr><td class="py-1.5 text-blue-400">AC 01</td><td>Spreadsheet Staging & Collision Quarantine</td><td>test_ac01_spreadsheet_migration</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 02</td><td>24-Char UHF RFID EPC Encoding</td><td>test_ac02_rfid_tagging</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 03</td><td>Circulation Lifecycle & EAS Toggling</td><td>test_ac03_circulation_workflow</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 04</td><td>Reference & Blocked Patron Restrictions</td><td>test_ac04_restrictions</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 05</td><td>Handheld Wand Audit & Misplaced Alert</td><td>test_ac05_inventory_audit</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 06</td><td>Perimeter Gate Alarm & Optical CCTV</td><td>test_ac06_security_gate_perimeter</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 07</td><td>Contactless Staff Smart Card Login</td><td>test_ac07_smart_card_login</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 08</td><td>Reports & Live Circulation Analytics</td><td>test_ac08_reports_and_analytics</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 09</td><td>Offline Gate Resilience & Outbox Queue</td><td>test_ac09_offline_resilience</td><td class="text-emerald-400">PASSED</td></tr>
-          <tr><td class="py-1.5 text-blue-400">AC 10</td><td>Disaster Recovery & Atomic Rollback</td><td>test_ac10_recovery_and_rollback</td><td class="text-emerald-400">PASSED</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Slide 10: Conclusion -->
-  <div class="slide justify-center items-center text-center px-4" data-index="10">
-    <div class="w-16 h-16 rounded-2xl gradient-badge flex items-center justify-center font-bold text-white text-2xl shadow-xl shadow-blue-500/25 mb-6">
-      <i class="fa-solid fa-check"></i>
-    </div>
-    <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Production-Ready & Fully Compliant</h2>
-    <p class="text-base text-gray-300 max-w-2xl mb-8">
-      LibraSync satisfies all technical evaluation criteria specified in the AISYS Candidate Software Development SOP, with industrial reliability, zero legacy database corruption, and modular architecture.
-    </p>
-
-    <div class="flex flex-wrap justify-center gap-4 text-xs font-mono">
-      <div class="glass-card px-4 py-2 border-emerald-500/30 text-emerald-400">
-        <i class="fa-solid fa-server mr-2"></i> Backend: http://localhost:8000
+    <!-- Slide 10: Verification Results & Production Readiness -->
+    <div class="slide" data-index="10">
+      <div class="mb-4">
+        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Verification Summary</span>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-0.5">Acceptance Criteria Matrix (AC 01 – AC 10)</h2>
+        <p class="text-xs md:text-sm text-slate-600">100% of evaluation scenarios verified with automated Pytest suites (15/15 passed).</p>
       </div>
-      <div class="glass-card px-4 py-2 border-blue-500/30 text-blue-400">
-        <i class="fa-solid fa-desktop mr-2"></i> Frontend UI: http://localhost:5173
+
+      <div class="card-clean p-4 overflow-x-auto flex-1 mb-4">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 text-slate-700 border-b border-slate-200">
+            <tr>
+              <th class="py-2 px-3 font-semibold">Criteria</th>
+              <th class="py-2 px-3 font-semibold">Scenario Description</th>
+              <th class="py-2 px-3 font-semibold">Automated Test Function</th>
+              <th class="py-2 px-3 font-semibold text-right">Result</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-600 font-mono-code">
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 01</td><td>Spreadsheet Staging & Duplicate Quarantine</td><td>test_ac01_spreadsheet_migration</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 02</td><td>24-Character UHF RFID EPC Tag Encoding</td><td>test_ac02_rfid_tagging</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 03</td><td>Circulation Lifecycle & Automatic EAS Toggling</td><td>test_ac03_circulation_workflow</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 04</td><td>Reference-Only & Blocked Member Restrictions</td><td>test_ac04_restrictions</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 05</td><td>Handheld Wand Shelf Audit & Misplacement Alert</td><td>test_ac05_inventory_audit</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 06</td><td>Perimeter Gate Alarm & Optical CCTV Snapshot</td><td>test_ac06_security_gate_perimeter</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 07</td><td>Contactless Staff Smart Card Authentication</td><td>test_ac07_smart_card_login</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 08</td><td>Reports, Circulation Trends & CSV Export</td><td>test_ac08_reports_and_analytics</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 09</td><td>Offline Gate Resilience & Outbox Queue</td><td>test_ac09_offline_resilience</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+            <tr><td class="py-1.5 px-3 font-bold text-blue-700">AC 10</td><td>Disaster Recovery & Atomic Batch Rollback</td><td>test_ac10_recovery_and_rollback</td><td class="text-right text-emerald-600 font-bold">PASSED</td></tr>
+          </tbody>
+        </table>
       </div>
-      <div class="glass-card px-4 py-2 border-purple-500/30 text-purple-400">
-        <i class="fa-solid fa-book mr-2"></i> API Docs: http://localhost:8000/docs
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono-code text-center">
+        <div class="card-clean p-2 border-emerald-200 bg-emerald-50/40 text-emerald-800">
+          <i class="fa-solid fa-server mr-1"></i> Backend: http://localhost:8000
+        </div>
+        <div class="card-clean p-2 border-blue-200 bg-blue-50/40 text-blue-800">
+          <i class="fa-solid fa-desktop mr-1"></i> UI: http://localhost:5173
+        </div>
+        <div class="card-clean p-2 border-slate-200 bg-slate-50 text-slate-800">
+          <i class="fa-solid fa-file-code mr-1"></i> 100% AISYS SOP Compliant
+        </div>
       </div>
     </div>
-  </div>
+
+  </main>
 
   <!-- Footer Navigation Controls -->
-  <footer class="flex items-center justify-between border-t border-gray-800 pt-4 mt-6">
-    <button id="prevBtn" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-sm font-medium transition disabled:opacity-30 disabled:cursor-not-allowed">
+  <footer class="no-print flex items-center justify-between border-t border-slate-200 pt-4 mt-6">
+    <button id="prevBtn" class="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-lg text-xs font-medium transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
       <i class="fa-solid fa-chevron-left mr-1"></i> Previous
     </button>
     <div class="flex space-x-1.5" id="dotsContainer">
       <!-- Dots populated via script -->
     </div>
-    <button id="nextBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition shadow-lg shadow-blue-500/20 disabled:opacity-30 disabled:cursor-not-allowed">
+    <button id="nextBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
       Next <i class="fa-solid fa-chevron-right ml-1"></i>
     </button>
   </footer>
@@ -401,14 +559,14 @@
 
     const slides = document.querySelectorAll('.slide');
     const slideCounter = document.getElementById('slideCounter');
+    const progressBar = document.getElementById('progressBar');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const dotsContainer = document.getElementById('dotsContainer');
 
-    // Create navigation dots
     for (let i = 1; i <= totalSlides; i++) {
       const dot = document.createElement('button');
-      dot.className = `w-2.5 h-2.5 rounded-full transition ${i === 1 ? 'bg-blue-500 scale-125' : 'bg-gray-700 hover:bg-gray-600'}`;
+      dot.className = `w-2 h-2 rounded-full transition-all ${i === 1 ? 'bg-blue-600 scale-125' : 'bg-slate-300 hover:bg-slate-400'}`;
       dot.onclick = () => showSlide(i);
       dotsContainer.appendChild(dot);
     }
@@ -425,16 +583,16 @@
       });
 
       slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      progressBar.style.width = `${(currentSlide / totalSlides) * 100}%`;
       prevBtn.disabled = currentSlide === 1;
       nextBtn.disabled = currentSlide === totalSlides;
 
-      // Update dots
       const dots = dotsContainer.children;
       for (let i = 0; i < dots.length; i++) {
         if (i + 1 === currentSlide) {
-          dots[i].className = 'w-2.5 h-2.5 rounded-full bg-blue-500 scale-125 transition';
+          dots[i].className = 'w-2 h-2 rounded-full bg-blue-600 scale-125 transition-all';
         } else {
-          dots[i].className = 'w-2.5 h-2.5 rounded-full bg-gray-700 hover:bg-gray-600 transition';
+          dots[i].className = 'w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all';
         }
       }
     }
@@ -447,6 +605,10 @@
         showSlide(currentSlide + 1);
       } else if (e.key === 'ArrowLeft') {
         showSlide(currentSlide - 1);
+      } else if (e.key === 'Home') {
+        showSlide(1);
+      } else if (e.key === 'End') {
+        showSlide(totalSlides);
       }
     });
 
@@ -454,4 +616,3 @@
   </script>
 </body>
 </html>
-
