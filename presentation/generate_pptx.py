@@ -592,3 +592,4 @@ if __name__ == "__main__":
     p1 = r"c:\Users\VISHNU\Desktop\AISYS\LibraSync\presentation\LibraSync_Technical_Presentation.pptx"
     p2 = r"c:\Users\VISHNU\Desktop\AISYS\LibraSync_Technical_Presentation.pptx"
     create_presentation([p1, p2])
+

@@ -89,3 +89,4 @@ When an evaluator asks *"Show me in the code where X is handled"*, immediately n
 7. **Terminal**: Run `pytest tests/ -v` to show **15 passed in under 3 seconds**.
 
 You are 100% prepared to ace the technical evaluation and secure the offer letter!
+
