@@ -450,3 +450,4 @@ if __name__ == "__main__":
     out1 = r"c:\Users\VISHNU\Desktop\AISYS\LibraSync\documentation\LibraSync_Technical_Documentation.pdf"
     out2 = r"c:\Users\VISHNU\Desktop\AISYS\LibraSync_Technical_Documentation.pdf"
     build_pdf([out1, out2])
+
