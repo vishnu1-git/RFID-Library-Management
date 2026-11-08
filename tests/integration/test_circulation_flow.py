@@ -48,3 +48,4 @@ def test_complete_circulation_lifecycle():
 
     finally:
         db.close()
+

@@ -106,3 +106,4 @@ Records a handheld reader tag read.
 * `POST /api/v1/migration/validate/{job_id}`: Validates format and checks duplicate collisions.
 * `POST /api/v1/migration/execute`: Atomically commits clean records into operational tables.
 * `POST /api/v1/migration/rollback`: Atomically deletes records created by the given job.
+

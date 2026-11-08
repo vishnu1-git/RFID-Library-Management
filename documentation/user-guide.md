@@ -276,3 +276,4 @@ If the local area network connection between the 3D perimeter gate and the backe
 ### 10.2 Database Connection Diagnostics
 - Navigate to **Settings** (`/settings`) to view live database connectivity status.
 - LibraSync connects to **PostgreSQL 16** via connection pool. If Docker or PostgreSQL is not running during local evaluation, the database layer automatically activates zero-friction development fallback to **SQLite** (`backend/app/librasync.db`), ensuring zero downtime during demonstrations.
+

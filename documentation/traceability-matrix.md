@@ -43,3 +43,4 @@ This matrix maps every functional specification, architectural layer, and Priori
 | **Hardware Agnostic Middleware** | Replaceable RFID adapters without rewriting circulation services. | Abstract base class `RFIDReader` in `rfid-middleware/adapters/base.py` normalizes physical hardware reads into device-neutral `RFIDEvent` schemas. |
 | **Staging-First Migration (Section 3)** | Safe spreadsheet ingestion with collision detection and rollback. | Staging table `migration_staging` buffers incoming raw rows. Duplicate detector checks intra-batch and active database. Rollback utility purges batch records atomically. |
 | **Enterprise Cryptography** | Secure staff credential storage and tamper-proof sessions. | Argon2id (`t=2, m=64MB, p=2`) password hashing in `app/core/security.py` and cryptographically signed JWT tokens with expiration claims. |
+

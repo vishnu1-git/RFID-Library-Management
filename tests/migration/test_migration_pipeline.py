@@ -85,3 +85,4 @@ def test_migration_pipeline_and_rollback():
 
     finally:
         db.close()
+

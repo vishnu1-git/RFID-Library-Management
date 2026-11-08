@@ -54,3 +54,4 @@ Book on shelf (Tag ARMED)  ------>   Antenna detects ARMED tag   ----->  Siren A
   * Checkout **DISARMS** the tag (`security_bit: false`).
   * Gate allows disarmed tag through with green visual clearance.
   * Checkin immediately **RE-ARMS** the tag (`security_bit: true`).
+

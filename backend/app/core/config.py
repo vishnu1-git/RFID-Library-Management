@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
 from pydantic import AnyHttpUrl, validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -41,10 +41,7 @@ class Settings(BaseSettings):
     ILMS_ADAPTER_TYPE: str = "mock"  # "mock", "ncip", "sip2"
     ILMS_ENDPOINT_URL: str = "http://ilms.local:8080/ncip"
 
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
-        extra = "allow"
+    model_config = SettingsConfigDict(case_sensitive=True, env_file=".env", extra="allow")
 
 
 settings = Settings()

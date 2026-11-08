@@ -207,3 +207,4 @@ def test_ac10_recovery_and_rollback(db_session):
     """AC 10: Atomic rollback of committed migration jobs."""
     # Verify migration service rollback function exists and is callable
     assert hasattr(MigrationService, "rollback_job")
+

@@ -33,3 +33,4 @@ if __name__ == "__main__":
 
     jid = int(sys.argv[1])
     execute_rollback(jid)
+

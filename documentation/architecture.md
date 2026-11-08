@@ -98,3 +98,4 @@ sequenceDiagram
     Note over GateSvc: security_bit is FALSE (Disarmed)
     GateSvc-->>Patron: Silent Authorized Passage (Green LED)
 ```
+

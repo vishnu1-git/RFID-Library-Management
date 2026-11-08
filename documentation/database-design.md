@@ -111,3 +111,4 @@ erDiagram
 | `migration_staging`| Uncommitted raw spreadsheet rows | Isolated staging buffer |
 | `migration_errors` | Specific row-by-row failure reasons | Preserves data integrity |
 | `outbox_events` | Reliable integration event queue | Guarantees at-least-once delivery |
+

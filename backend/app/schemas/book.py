@@ -1,6 +1,6 @@
 import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BookItemBase(BaseModel):
@@ -20,8 +20,7 @@ class BookItemResponse(BookItemBase):
     created_at: datetime.datetime
     epc: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class BookBase(BaseModel):
@@ -54,8 +53,7 @@ class BookResponse(BookBase):
     available_copies: int
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class BookDetailResponse(BookResponse):

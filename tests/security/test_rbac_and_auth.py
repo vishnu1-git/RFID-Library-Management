@@ -44,3 +44,4 @@ def test_smart_card_rbac_lookup():
         assert "Librarian" in role_names
     finally:
         db.close()
+
