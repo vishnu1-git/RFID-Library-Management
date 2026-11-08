@@ -91,3 +91,4 @@ class CatalogService:
         db.commit()
         db.refresh(item)
         return item
+

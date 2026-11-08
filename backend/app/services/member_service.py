@@ -68,3 +68,4 @@ class MemberService:
         db.commit()
         db.refresh(member)
         return member
+

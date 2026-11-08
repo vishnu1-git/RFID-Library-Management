@@ -28,3 +28,4 @@ class Notification(Base):
     status = Column(String(20), default=NotificationStatus.QUEUED.value, nullable=False, index=True)
     sent_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
+

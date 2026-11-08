@@ -29,3 +29,4 @@ class Member(Base):
 
     circulations = relationship("Circulation", back_populates="member")
     fines = relationship("Fine", back_populates="member")
+

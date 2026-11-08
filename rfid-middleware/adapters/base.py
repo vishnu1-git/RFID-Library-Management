@@ -53,3 +53,4 @@ class RFIDReader(ABC):
     def disconnect(self) -> bool:
         """Closes hardware interface cleanly."""
         pass
+

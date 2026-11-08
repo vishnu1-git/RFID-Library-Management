@@ -214,3 +214,4 @@ CREATE INDEX IF NOT EXISTS idx_members_code ON members(member_code);
 CREATE INDEX IF NOT EXISTS idx_members_card_uid ON members(card_rfid_uid);
 CREATE INDEX IF NOT EXISTS idx_circulation_status ON circulation(status);
 CREATE INDEX IF NOT EXISTS idx_gate_events_timestamp ON gate_events(timestamp);
+

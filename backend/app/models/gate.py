@@ -20,3 +20,4 @@ class GateEvent(Base):
     notes = Column(Text, nullable=True)
 
     rfid_tag = relationship("RFIDTag", back_populates="gate_events")
+

@@ -108,3 +108,4 @@ def get_inventory_results(session_id: int, db: Session = Depends(get_db)):
         reads=reads_out,
         missing_items=missing_items
     )
+

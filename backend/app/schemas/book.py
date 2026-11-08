@@ -60,3 +60,4 @@ class BookResponse(BookBase):
 
 class BookDetailResponse(BookResponse):
     items: List[BookItemResponse] = []
+

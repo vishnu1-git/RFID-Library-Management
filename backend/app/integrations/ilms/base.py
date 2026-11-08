@@ -28,3 +28,4 @@ class ILMSAdapter(ABC):
     def checkin_item(self, item_id: str) -> Dict[str, Any]:
         """Emits standard checkin/return command to ILMS."""
         pass
+

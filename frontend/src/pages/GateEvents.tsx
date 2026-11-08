@@ -251,3 +251,4 @@ export const GateEventsPage: React.FC = () => {
     </div>
   );
 };
+

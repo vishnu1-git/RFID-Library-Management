@@ -53,3 +53,4 @@ class InventorySessionResponse(BaseModel):
 class InventorySessionDetailResponse(InventorySessionResponse):
     reads: List[InventoryReadResponse] = []
     missing_items: List[MissingBookItem] = []
+

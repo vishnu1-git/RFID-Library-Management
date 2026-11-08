@@ -63,3 +63,4 @@ class MigrationError(Base):
     raw_record = Column(Text, nullable=True)
 
     job = relationship("MigrationJob", back_populates="errors")
+

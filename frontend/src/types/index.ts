@@ -165,3 +165,4 @@ export interface DashboardStats {
   category_distribution: Array<{ name: string; value: number }>;
   daily_circulation_trend: Array<{ day: string; checkouts: number }>;
 }
+

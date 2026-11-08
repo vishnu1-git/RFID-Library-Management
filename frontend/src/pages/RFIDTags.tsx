@@ -211,3 +211,4 @@ export const RFIDTagsPage: React.FC = () => {
     </div>
   );
 };
+

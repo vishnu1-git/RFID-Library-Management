@@ -63,3 +63,4 @@ class GateService:
         db.commit()
         db.refresh(gate_event)
         return gate_event
+

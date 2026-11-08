@@ -44,3 +44,4 @@ class AuditService:
         db.commit()
         db.refresh(event)
         return event
+

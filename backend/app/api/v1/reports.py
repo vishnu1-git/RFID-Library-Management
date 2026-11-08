@@ -70,3 +70,4 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         category_distribution=category_distribution,
         daily_circulation_trend=daily_circulation_trend
     )
+

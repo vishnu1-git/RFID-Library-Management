@@ -47,3 +47,4 @@ class BookItem(Base):
     rfid_tag = relationship("RFIDTag", back_populates="book_item", uselist=False)
     circulations = relationship("Circulation", back_populates="book_item")
     inventory_reads = relationship("InventoryRead", back_populates="book_item")
+

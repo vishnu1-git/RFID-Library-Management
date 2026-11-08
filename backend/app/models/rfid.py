@@ -20,3 +20,4 @@ class RFIDTag(Base):
 
     book_item = relationship("BookItem", back_populates="rfid_tag")
     gate_events = relationship("GateEvent", back_populates="rfid_tag")
+

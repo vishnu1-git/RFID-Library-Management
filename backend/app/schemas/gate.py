@@ -29,3 +29,4 @@ class GateEventResponse(BaseModel):
 class GateEventResolve(BaseModel):
     event_id: int
     notes: Optional[str] = "Checked out manually / false alarm verified by security"
+

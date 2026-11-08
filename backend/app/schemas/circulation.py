@@ -66,3 +66,4 @@ class FineResponse(BaseModel):
 class FinePayRequest(BaseModel):
     fine_id: int
     action: str = "PAY"  # "PAY" or "WAIVE"
+

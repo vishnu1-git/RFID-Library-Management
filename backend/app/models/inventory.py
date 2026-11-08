@@ -42,3 +42,4 @@ class InventoryRead(Base):
 
     session = relationship("InventorySession", back_populates="reads")
     book_item = relationship("BookItem", back_populates="inventory_reads")
+

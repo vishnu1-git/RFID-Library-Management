@@ -106,3 +106,4 @@ def create_staff_user(
         created_at=new_user.created_at,
         roles=user_in.role_names
     )
+

@@ -91,3 +91,4 @@ def resolve_gate_event(
         resolved=ev.resolved,
         notes=ev.notes
     )
+

@@ -101,3 +101,4 @@ def read_current_user(current_user: User = Depends(get_current_active_user)) -> 
         created_at=current_user.created_at,
         roles=role_names
     )
+

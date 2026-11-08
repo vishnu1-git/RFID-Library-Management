@@ -40,3 +40,4 @@ class MigrationExecuteRequest(BaseModel):
 
 class MigrationRollbackRequest(BaseModel):
     job_id: int
+

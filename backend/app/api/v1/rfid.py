@@ -167,3 +167,4 @@ def list_tags(db: Session = Depends(get_db)):
             accession_number=item.accession_number if item else None
         ))
     return results
+

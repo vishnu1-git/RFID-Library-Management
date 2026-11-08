@@ -82,3 +82,4 @@ class InventoryService:
         db.commit()
         db.refresh(session)
         return session
+

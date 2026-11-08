@@ -74,3 +74,4 @@ class FineService:
         db.commit()
         db.refresh(fine)
         return fine
+

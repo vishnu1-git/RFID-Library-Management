@@ -52,3 +52,4 @@ class Fine(Base):
 
     circulation = relationship("Circulation", back_populates="fines")
     member = relationship("Member", back_populates="fines")
+

@@ -44,3 +44,4 @@ class NCIPAdapter(ILMSAdapter):
             "item_id": item_id,
             "transaction_status": "SUCCESS"
         }
+

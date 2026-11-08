@@ -36,3 +36,4 @@ class OutboxEvent(Base):
     retry_count = Column(Integer, default=0, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
     processed_at = Column(DateTime, nullable=True)
+

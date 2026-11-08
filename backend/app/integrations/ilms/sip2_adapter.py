@@ -46,3 +46,4 @@ class SIP2Adapter(ILMSAdapter):
             "raw_payload": f"09N{now_str}AO|AB{item_id}|",
             "ok": True
         }
+
