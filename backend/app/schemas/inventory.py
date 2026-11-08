@@ -1,6 +1,6 @@
 import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class InventoryStartRequest(BaseModel):
@@ -24,8 +24,7 @@ class InventoryReadResponse(BaseModel):
     is_misplaced: bool
     read_time: datetime.datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MissingBookItem(BaseModel):
@@ -46,8 +45,7 @@ class InventorySessionResponse(BaseModel):
     start_time: datetime.datetime
     end_time: Optional[datetime.datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class InventorySessionDetailResponse(InventorySessionResponse):

@@ -1,6 +1,6 @@
 import datetime
 from typing import List, Optional, Any, Dict
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class MigrationJobResponse(BaseModel):
@@ -14,8 +14,7 @@ class MigrationJobResponse(BaseModel):
     started_at: datetime.datetime
     completed_at: Optional[datetime.datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MigrationErrorResponse(BaseModel):
@@ -25,8 +24,7 @@ class MigrationErrorResponse(BaseModel):
     error_reason: str
     raw_record: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MigrationJobDetailResponse(MigrationJobResponse):

@@ -1,6 +1,6 @@
 import datetime
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class DashboardStats(BaseModel):
@@ -29,6 +29,5 @@ class AuditLogResponse(BaseModel):
     ip_address: Optional[str] = None
     timestamp: datetime.datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 

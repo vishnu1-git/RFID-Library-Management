@@ -219,3 +219,4 @@
 | | `channel` | String(20) | Not Null | `EMAIL`, `SMS`, `PRINT`. |
 | | `subject` | String(255) | Nullable | Notification header. |
 | | `status` | String(20) | Default 'QUEUED' | Dispatch status. |
+
